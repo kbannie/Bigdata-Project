@@ -1,0 +1,59 @@
+from sklearn import linear_model
+import numpy as np
+import pandas as pd
+import matplotlib
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+matplotlib.style.use('ggplot')
+
+#2015년도-2021년도에 따른 1인 가구수 입력
+data = {'x' : [2015, 2016, 2017, 2018, 2019, 2020, 2021],
+        'y' : [1115744, 1138860, 1180540, 1229421, 1299787, 1390701, 1489893]}
+
+
+data = pd.DataFrame(data)
+data.info()
+
+#산점도 그리기
+data.plot(kind="scatter", 
+          x='x',          
+          y='y',           
+          figsize=(6,6),   
+          color="orange")   
+
+#선형회귀분석하기
+lr= LinearRegression()
+
+lr.fit(X = pd.DataFrame(data["x"]), y = data["y"])
+print('a value = ', lr.intercept_)
+print('b balue =', lr.coef_)
+
+prediction =lr.predict(X = pd.DataFrame(data["x"]))
+print(prediction)
+residuals = data["y"] - prediction;  
+print(residuals)
+residuals.describe()
+SSE=sse= (residuals**2).sum()
+print("SSE = ", SSE);  
+SST = ((data["y"]-data["y"].mean())**2).sum()
+print("SST = ", SST)
+R_squared = 1 - (SSE/SST)
+print('R_squared = ', R_squared)
+
+data.plot(kind="scatter",x="x",y="y",figsize=(5,5),color="red")
+plt.plot(data["x"],prediction,color="blue")
+
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+print('score = ', lr.score(X = pd.DataFrame(data["x"]), y = data["y"]))
+print('Mean_absolute_Error = ', mean_absolute_error(prediction, data['y']))
+print('Mean_Squared_Error = ', mean_squared_error(prediction, data['y']))
+print('r2_score = ', r2_score(prediction, data['y']))
+print('RMSE = ', mean_squared_error(prediction, data['y'])**0.5)
+import sklearn.metrics; dir(sklearn.metrics)
+
+#2025년도 1인 가구 예측하기
+mydata = {'x' : [2025],
+        'y' : []}
+prediction =lr.predict(X = pd.DataFrame(mydata["x"]))
+print("2025년도 1인 가구 예측=>", prediction)
